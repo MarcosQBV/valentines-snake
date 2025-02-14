@@ -43,7 +43,7 @@ function countdownTimer() {
         countdown--;
         setTimeout(countdownTimer, 500);
     } else {
-        drawCountdown("GO !");
+        drawCountdown("LOVE !");
         setTimeout(() => {
             gameRunning = true; // Start game
             gameLoop = setInterval(gameLoopFunc, 100);
@@ -52,7 +52,7 @@ function countdownTimer() {
 }
 
 function drawCountdown(num) {
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "rgb(181, 76, 144)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "pink";
     ctx.font = "50px VT323";
@@ -125,17 +125,17 @@ function drawScore() {
 function drawGame() {
     if (!gameRunning) return;
 
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "rgb(181, 76, 144)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     drawScore(); // Draw the score
 
     // Draw snake
-    ctx.fillStyle = "pink";
+    ctx.fillStyle = "rgb(199, 159, 255)";
     snake.forEach(segment => ctx.fillRect(segment.x, segment.y, box, box));
 
     // Draw food
-    ctx.fillStyle = "magenta";
+    ctx.fillStyle = "rgb(255, 159, 228)";
     ctx.fillRect(food.x, food.y, box, box);
 }
 
