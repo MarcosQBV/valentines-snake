@@ -9,9 +9,22 @@
 </head>
 <body>
     <h1>Valentine's Snake ❤️</h1>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="flex-1">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div>
+            <div id="leaderboard"></div>
+            <div id="nicknameUI">
+                <h3>
+                Enter your nickname:
+                </h3>
+                <input type="text" id="nickname" />
+                <button id="submitBtn">Save Score!</button>
+            </div> 
+        </div>
+    </div>
     <button id="startBtn">Start ❤️</button>
     <button id="restartBtn" onclick="startGame()">Restart</button>
+    
     <script src="script.js"></script>
 </body> 
 </html>

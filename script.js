@@ -2,6 +2,8 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const startBtn = document.getElementById("startBtn");
 const restartBtn = document.getElementById("restartBtn");
+const submitBtn = document.getElementById("submitBtn");
+const nicknameUIDiv = document.getElementById("nicknameUI");
 
 const box = 20; // Grid size
 let snake, direction, food, gameLoop;
@@ -9,11 +11,17 @@ let countdown = 3; // Countdown starts at 3
 let gameRunning = false; // Game starts paused
 let score = 0; // Track the score
 
+const backend_url = "https://valentines-snake-backend.onrender.com";
+
+showLeaderboard();
+
 // Show the start button when page loads
 startBtn.style.display = "block"; 
 
 // Event listener for the start button
 startBtn.addEventListener("click", startGame);
+
+submitBtn.addEventListener("click", saveScore);
 
 document.addEventListener("keydown", changeDirection);
 
@@ -21,6 +29,11 @@ function startGame() {
     // Hide the start button
     startBtn.style.display = "none"; 
     restartBtn.style.display = "none";
+    startBtn.style.display = "none"; 
+    restartBtn.style.display = "none";
+    nicknameUIDiv.style.display = "none";
+    submitBtn.style.display = "none";
+    submitBtn.disabled = false;
 
     // Reset variables
     snake = [{ x: 200, y: 200 }];
@@ -98,9 +111,15 @@ function updateGame() {
     // Collision detection (wall or self)
     if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height || 
         snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        
         clearInterval(gameLoop);
+        gameRunning = false;
+        
+        // Ask for a nickname
+        nicknameUIDiv.style.display = "block";
+        submitBtn.style.display = "block";
+        submitBtn.innerHTML = "Save Score !";
         restartBtn.style.display = "block"; // Show restart button
-        return;
     }
 
     snake.unshift(head);
@@ -137,6 +156,60 @@ function drawGame() {
     // Draw food
     ctx.fillStyle = "rgb(255, 159, 228)";
     ctx.fillRect(food.x, food.y, box, box);
+}
+
+
+
+function saveScore() {
+    let nickname = document.getElementById("nickname").value;
+    if (nickname) {
+        submitBtn.innerHTML = "Loading...";
+        // Submit the score to the backend
+        fetch(backend_url + "/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: nickname, score: score })
+        })
+        .then(response => {
+            if (response.ok) {
+                submitBtn.innerHTML = "Great job, " + nickname + " <3";
+                submitBtn.disabled = true;
+                // Now show the updated leaderboard
+                showLeaderboard();
+            } 
+        })
+        .catch(error => {
+            console.error("Error submitting score:", error);
+            submitBtn.innerHTML = "Failed to submit score :(";
+        });
+    } else {
+        submitBtn.innerHTML = "Set a Nickname !";
+    }
+}
+
+function showLeaderboard() {
+    let leaderboardDiv = document.getElementById("leaderboard"); // Move outside to be accessible in catch
+
+    fetch(backend_url + "/leaderboard")
+        .then(response => response.json())
+        .then(data => {
+            leaderboardDiv.innerHTML = "<h2>Leaderboard:</h2>";
+
+            let list = document.createElement("ul");
+            data.forEach(entry => {
+                let listItem = document.createElement("li");
+                listItem.textContent = `${entry[0]}: ${entry[1]}`;
+                list.appendChild(listItem);
+            });
+
+            leaderboardDiv.appendChild(list);
+            leaderboardDiv.style.display = "block";
+        })
+        .catch(error => {
+            console.error("Error retrieving leaderboard", error);
+            leaderboardDiv.innerHTML = "<h2>Leaderboard:</h2><p>Failed to retrieve leaderboard :(</p>";
+            leaderboardDiv.style.display = "block";
+        });
 }
 
 function gameLoopFunc() {
