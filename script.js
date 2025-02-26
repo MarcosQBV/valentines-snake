@@ -11,7 +11,7 @@ let countdown = 3; // Countdown starts at 3
 let gameRunning = false; // Game starts paused
 let score = 0; // Track the score
 
-const backend_url = "https://valentines-snake-backend.onrender.com";
+const backend_url = "https://valentines-snake-backend-production.up.railway.app";
 
 showLeaderboard();
 
