@@ -15,8 +15,15 @@ canvas {
   font-family: 'VT323';
 }
 
+input {
+  font-family: 'VT323';
+  font-size: 19px;
+  background-color: #fed2fa;
+}
+
 #nicknameUI {
   display: none;
+  
 }
 
 #leaderboard {

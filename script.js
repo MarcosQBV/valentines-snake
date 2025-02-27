@@ -6,7 +6,11 @@ const submitBtn = document.getElementById("submitBtn");
 const nicknameUIDiv = document.getElementById("nicknameUI");
 
 const box = 20; // Grid size
-let snake, direction, food, gameLoop;
+let snake, direction, gameLoop, foodCoords;
+let food = {
+    x: Math.floor(Math.random() * (canvas.width / box)) * box,
+    y: Math.floor(Math.random() * (canvas.height / box)) * box
+}
 let countdown = 3; // Countdown starts at 3
 let gameRunning = false; // Game starts paused
 let score = 0; // Track the score
@@ -92,10 +96,17 @@ function changeDirection(event) {
 }
 
 function generateFood() {
-    return {
-        x: Math.floor(Math.random() * (canvas.width / box)) * box,
-        y: Math.floor(Math.random() * (canvas.height / box)) * box
-    };
+    x = Math.floor(Math.random() * (canvas.width / box)) * box;
+    y = Math.floor(Math.random() * (canvas.height / box)) * box;
+    let newFoodCoords = {x , y};
+    if (
+        !snake.some(segment => segment.x === newFoodCoords.x && segment.y === newFoodCoords.y) &&
+        (newFoodCoords.x !== food.x || newFoodCoords.y !== food.y)
+    ) {
+        return newFoodCoords;
+    } else {
+        generateFood()
+    }
 }
 
 function updateGame() {
